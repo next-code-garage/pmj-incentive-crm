@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "db:init": "node --env-file-if-exists=.env.local scripts/init-db.mjs",
+    "admin:create": "node --env-file-if-exists=.env.local scripts/create-admin.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

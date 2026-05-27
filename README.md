@@ -4,11 +4,12 @@ A CRM starter application built with Next.js App Router, React, TypeScript, Tail
 
 ## Included
 
-- Initial responsive login screen for the future CRM authentication flow
+- Admin username/password login with hashed credentials and expiring server-side sessions
 - Tailwind CSS styling ready for further product development
 - PostgreSQL connection helper using `pg`
 - `/api/health` route for validating the database connection
 - Starter SQL schema for organizations, contacts, deals, and activities
+- Admin account creation command and protected `/admin` workspace
 - Neon/PostgreSQL configuration through the server-only `DATABASE_URL` environment variable
 - Docker Compose service for optional local PostgreSQL development
 
@@ -21,13 +22,22 @@ npm install
 cp .env.example .env.local
 # Set DATABASE_URL in .env.local
 npm run db:init
+npm run admin:create -- admin 'choose-a-long-unique-password'
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). To verify PostgreSQL connectivity, open
 [http://localhost:3000/api/health](http://localhost:3000/api/health).
 
-Run `npm run db:init` once to create the starter CRM tables in the configured database.
+Run `npm run db:init` once to create the CRM and authentication tables in the configured database.
+Then create the administrator username and password:
+
+```bash
+npm run admin:create -- <username> '<password>'
+```
+
+Passwords must be at least 12 characters and are stored as scrypt hashes, not plain text. The
+command can be run again for the same username to reset its password.
 `.env.local` is ignored by Git and must not be committed.
 
 For optional local PostgreSQL development, start Docker and set `DATABASE_URL` in `.env.local`
@@ -55,7 +65,14 @@ first time its volume is created.
    npm run db:init
    ```
 
-5. Deploy, then verify the login page and `/api/health`.
+5. Create the production administrator from a secure local shell pointed at the production
+   database:
+
+   ```bash
+   npm run admin:create -- admin 'choose-a-long-unique-password'
+   ```
+
+6. Deploy, then verify login, logout, protected `/admin` access, and `/api/health`.
 
 The database credential is consumed only by server-side code. Do not prefix it with
 `NEXT_PUBLIC_`, which would expose it to the browser.
@@ -72,6 +89,7 @@ npm run build      # Build the production application
 npm run lint       # Run ESLint
 npm run typecheck  # Run TypeScript type checking
 npm run db:init    # Initialize the configured PostgreSQL schema
+npm run admin:create -- <username> '<password>'
 docker compose up -d
 docker compose down
 ```
@@ -81,18 +99,24 @@ docker compose down
 ```text
 src/
   app/
-    page.tsx           Initial login screen
+    page.tsx           Admin login screen
+    admin/             Protected admin landing page
+    api/auth/          Login and logout endpoints
     api/health/        PostgreSQL health check endpoint
   lib/
+    auth.ts            Admin credential and session functions
     db.ts              Server-side database helper
 database/
-  schema.sql           Initial PostgreSQL schema
+  schema.sql           CRM and authentication schema
+scripts/
+  create-admin.mjs     Create or reset an administrator account
 compose.yaml           Local PostgreSQL service
 .env.example           Required local/server environment variable template
 ```
 
-## Next Implementation Steps
+## Authentication Notes
 
-- Add authentication and user/workspace permissions.
-- Build contacts, leads, deals, and activities after login.
-- Add migrations and seed data as the schema evolves.
+- Admin sessions are stored in PostgreSQL and expire after 12 hours.
+- Session cookies are HTTP-only, `SameSite=Lax`, and marked secure in production.
+- Five failed password attempts lock the account for 15 minutes.
+- Build contacts, leads, deals, and activities behind `/admin` as the CRM expands.
