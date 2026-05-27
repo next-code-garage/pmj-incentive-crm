@@ -15,12 +15,12 @@ export function AdminNavigation() {
   const pathname = usePathname();
 
   return (
-    <div className="pt-7">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+    <div className="pt-5">
+      <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
         Main Menu
       </p>
       <nav aria-label="Admin modules">
-        <ul className="space-y-2">
+        <ul className="space-y-1">
           {adminNavigation.map((item) => {
             const isActive = pathname === item.href;
 
@@ -28,9 +28,9 @@ export function AdminNavigation() {
               <li key={item.label}>
                 <Link
                   aria-current={isActive ? "page" : undefined}
-                  className={`block rounded-xl px-4 py-3.5 text-sm font-semibold ${
+                  className={`block rounded-lg px-3 py-2.5 text-sm font-medium ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-sm"
+                      ? "bg-blue-600 text-white"
                       : "text-slate-300 hover:bg-white/10 hover:text-white"
                   }`}
                   href={item.href}
