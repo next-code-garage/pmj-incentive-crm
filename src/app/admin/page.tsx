@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { ModulePage } from "@/app/admin/module-page";
 
 export default function AdminPage() {
-  redirect("/admin/manage-employee");
+  return <ModulePage title="Home" />;
 }

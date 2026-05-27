@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const adminNavigation = [
+  { label: "Home", href: "/admin" },
   { label: "Manage Employee", href: "/admin/manage-employee" },
   { label: "Incentive", href: "/admin/incentive" },
   { label: "Past Incentive", href: "/admin/past-incentive" },
