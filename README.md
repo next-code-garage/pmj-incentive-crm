@@ -8,7 +8,7 @@ A CRM starter application built with Next.js App Router, React, TypeScript, Tail
 - Tailwind CSS styling ready for further product development
 - PostgreSQL connection helper using `pg`
 - `/api/health` route for validating the database connection
-- Starter SQL schema for organizations, contacts, deals, and activities
+- PostgreSQL schema for administrator credentials and sessions
 - Admin account creation command and protected `/admin` workspace
 - Neon/PostgreSQL configuration through the server-only `DATABASE_URL` environment variable
 - Docker Compose service for optional local PostgreSQL development
@@ -29,7 +29,7 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000). To verify PostgreSQL connectivity, open
 [http://localhost:3000/api/health](http://localhost:3000/api/health).
 
-Run `npm run db:init` once to create the CRM and authentication tables in the configured database.
+Run `npm run db:init` once to create the authentication tables in the configured database.
 Then create the administrator username and password:
 
 ```bash
@@ -107,7 +107,7 @@ src/
     auth.ts            Admin credential and session functions
     db.ts              Server-side database helper
 database/
-  schema.sql           CRM and authentication schema
+  schema.sql           Administrator authentication schema
 scripts/
   create-admin.mjs     Create or reset an administrator account
 compose.yaml           Local PostgreSQL service
@@ -119,4 +119,4 @@ compose.yaml           Local PostgreSQL service
 - Admin sessions are stored in PostgreSQL and expire after 12 hours.
 - Session cookies are HTTP-only, `SameSite=Lax`, and marked secure in production.
 - Five failed password attempts lock the account for 15 minutes.
-- Build contacts, leads, deals, and activities behind `/admin` as the CRM expands.
+- Add operational CRM data tables as each admin module is implemented.
